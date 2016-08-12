@@ -1,0 +1,7 @@
+package com.examonline.service;
+
+import com.examonline.entity.Answer;
+
+public interface AnswerService extends BaseService<Answer>{
+
+}

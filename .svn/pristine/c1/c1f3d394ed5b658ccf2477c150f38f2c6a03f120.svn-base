@@ -1,0 +1,14 @@
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.examonline.entity">
+    <class name="User" table="users">
+        <id name="id" column="id" type="int">
+            <generator class="identity"/>
+        </id>
+        <property name="userName" column="userName" type="string" length="20"/>
+        <property name="password" column="password" type="string" length="32"/>
+        <property name="realName" column="realName" type="string" length="20"/>
+    </class>
+    
+</hibernate-mapping>

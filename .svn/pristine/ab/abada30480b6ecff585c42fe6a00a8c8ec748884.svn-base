@@ -1,0 +1,78 @@
+/*package com.examonline.test;
+
+
+
+import java.util.Date;
+import java.util.List;
+
+import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.util.DigestUtils;
+
+import com.examonline.entity.Course;
+import com.examonline.entity.Score;
+import com.examonline.entity.Student;
+import com.examonline.service.CourseService;
+import com.examonline.service.ScoreService;
+import com.examonline.service.StudentService;
+
+
+public class MyTest {
+
+	private ApplicationContext act=new ClassPathXmlApplicationContext("beans.xml");;
+
+	@Test
+	public void ScoreQueryTest() {
+		
+		//从spring容器中获取到ScoreService对象
+		ScoreService scoreService= act.getBean(ScoreService.class);
+		Score test_score=new Score();
+		test_score.setCourseNumber("20130504");
+		test_score.setNumber("654321");
+		test_score.setPaperID(7);
+		test_score.setSingleScore(45);
+		test_score.setMultipleScore(40);
+		Date date=new Date(System.currentTimeMillis());
+		//在hibernate中的timestamp（数据库中的日期类型）和这里的sql.date的数据类型是能相互转换的哈
+		test_score.setTest_Date(date);
+		scoreService.saveEntity(test_score);
+	}
+	
+	@Test
+	public void Course_test() {
+		CourseService courseService= act.getBean(CourseService.class);
+		Course test_course=new Course();
+		test_course.setCourseName("进击的雅思");
+		test_course.setCourseNumber("20130504");
+		Date date=new Date(System.currentTimeMillis());
+		test_course.setCreateTime(date);
+		courseService.saveEntity(test_course);
+	}
+	@Test
+	public void testImpl(){
+		ScoreService scoreService= act.getBean(ScoreService.class);
+		List<Score>  temp=scoreService.CourseName();
+		for(int i=0;i<temp.size();i++){
+			System.out.println(temp.get(i).toString());
+		}
+	}
+	
+	
+	@Test
+	public void Student(){
+		StudentService student= act.getBean(StudentService.class);
+		Student stu=new Student();
+		stu.setStuName("宋婷玉");
+		stu.setStuSex("女");
+		stu.setPwd(DigestUtils.md5DigestAsHex("456789".getBytes()));
+		stu.setProcession("孤独的寂寞");
+		stu.setIdCard("741258963");
+		stu.setSecQue("想当炼器师吗");
+		stu.setSecAns("是嘛");
+		stu.setDate(new Date());
+		student.saveEntity(stu);
+	}
+	
+}
+*/

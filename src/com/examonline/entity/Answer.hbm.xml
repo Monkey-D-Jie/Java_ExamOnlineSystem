@@ -1,0 +1,27 @@
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <!-- 指名该映射文件对应的实体类"src/com/examonline/entity/Answer.hbm.xml"
+    	table:数据库中对应的表的名称
+     -->
+    <class name="com.examonline.entity.Answer" table="Answer">
+        <!-- 标识主键的属性 -->
+        <id name="id" column="id" type="int">
+            <!-- 主键生成策略
+            	identity:自增长
+            	uuid：string类型的数据
+             -->
+            <generator class="identity"/>
+        </id>
+        <!-- 普通属性 -->
+        <property name="stuNum" column="stuNum"  type="string"/>
+         <property name="type" column="type"  type="string"/>
+        <property name="answer" column="answer"  type="string"/>
+         <property name="isTrue" column="isTrue"  type="boolean"/>
+        <property name="examdate" column="examdate" type="timestamp"/>
+         <property name="LessonId" column="LessonId" type="int"/>
+          <property name="taotiId" column="taotiId" type="int"/>
+            <property name="questionId" column="questionId" type="int"/>
+    </class>
+</hibernate-mapping>  

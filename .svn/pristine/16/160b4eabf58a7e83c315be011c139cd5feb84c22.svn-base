@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+
+
+	<package name="manger" namespace="/manger" extends="one" >
+	
+		<!-- questionAction -->
+		<action name="question_*" class="com.examonline.action.QuestionAction" method="{1}">
+			<result name="index">/WEB-INF/manage/main.jsp</result>
+			<result name="questions">/WEB-INF/manage/questions.jsp</result>
+			<result name="addques">/WEB-INF/manage/questions_Add.jsp</result>
+			<result name="doadd" type="redirectAction">question_questions.do</result>
+			<result name="edit" >/WEB-INF/manage/questions_Modify.jsp</result>
+			<result name="doedit" type="redirectAction">question_questions.do</result>
+			<result name="del" type="redirectAction">question_questions.do</result>
+		</action>
+		<!-- LoginAction -->
+		<action name="LoginAction_*" class="loginAction" method="{1}">
+		    <result name="index">/WEB-INF/manage/main.jsp</result>
+		    <result name="input">/login.jsp</result>
+		</action>
+		
+		<!-- LessonAction -->
+		<action name="LessonAction_*" class="com.examonline.action.LessonAction" method="{1}">
+			<result name="lesson">/WEB-INF/manage/lesson.jsp</result>
+			<result name="lessonAdd">/WEB-INF/manage/lesson_add.jsp</result>
+			<result name="redirect" type = "redirectAction">LessonAction_lesson.do</result>
+		</action>
+		
+		<!-- TaotiAction -->
+		<action name="TaotiAction_*" class="com.examonline.action.TaotiAction" method="{1}">
+			<result name="index">/WEB-INF/manage/taoTi.jsp</result>
+		    <result name="add">/WEB-INF/manage/taoTi_Add.jsp</result>
+		    <result name="edit">/WEB-INF/manage/taoTi_Modify.jsp</result>
+		 	<result name="redirect" type="redirect">TaotiAction_index.do</result>
+		</action>
+		<action name=""></action>
+		
+		
+		
+		
+		
+		
+		<!-- 退出专用action区 -->
+		<action name="ExitAction_*" class="com.examonline.action.ExitAction" method="{1}">
+		    <result name="exit">/WEB-INF/manage/main.jsp</result>
+		</action>
+		<!-- 退出专用action区 -->
+		
+	</package>
+
+</struts>

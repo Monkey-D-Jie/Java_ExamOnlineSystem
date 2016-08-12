@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+    <hibernate-mapping package="com.examonline.entity">
+    	<class name="com.examonline.entity.Question" table="questions">
+    		<id name="id" column="id">
+    			<generator class="identity"/>
+    		</id>
+    		<property name="questionName" column="questionName" type="string"/>
+    		<property name="type" column="type" type="string"/>
+    		<property name="options" column="options" type="string"/>
+    		<property name="rightAnswer" column="rightAnswer" type="string"/>
+    		<property name="note" column="note" type="string"/>
+    		<property name="jiondate" column="jiondate" type="timestamp"></property>
+    		<many-to-one name="taoti" lazy="false" column="taotiId" class="com.examonline.entity.Taoti"/>
+    	</class>
+    </hibernate-mapping>

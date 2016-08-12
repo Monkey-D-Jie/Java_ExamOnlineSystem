@@ -1,0 +1,24 @@
+package com.examonline.service.impl;
+
+import java.io.Serializable;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.examonline.dao.BaseDao;
+import com.examonline.entity.Answer;
+import com.examonline.service.AnswerService;
+
+
+@Service("answerService")
+public class AnswerServiceImpl extends BaseServiceImpl<Answer> implements AnswerService {
+	
+	@Resource(name="answerDao")
+	@Override
+	public void setBaseDao(BaseDao<Answer> baseDao) {
+		super.setBaseDao(baseDao);
+	}
+}

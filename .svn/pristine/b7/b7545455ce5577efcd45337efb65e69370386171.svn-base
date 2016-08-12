@@ -1,0 +1,20 @@
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.examonline.entity">
+    <class name="Student" table="students">
+        <id name="id" column="id" type="int">
+            <generator class="identity"/>
+        </id>
+        <property name="stuNum" column="stuNum" type="string" length="20"/>
+        <property name="stuName" column="stuName" type="string" length="32"/>
+        <property name="stuSex" column="stuSex" type="string" length="20"/>
+        <property name="secQue" column="secQue" type="string" length="20"/>
+        <property name="secAns" column="secAns" type="string" length="20"/>
+        <property name="IdCard" column="IdCard" type="string" length="20"/>
+        <property name="pwd" column="pwd" type="string" length="20"/>
+        <property name="procession" column="procession" type="string" length="20"/>
+        <property name="date" column="date" type="timestamp" length="20"/>
+    </class>
+    
+</hibernate-mapping>

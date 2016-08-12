@@ -1,0 +1,127 @@
+<%@ page contentType="text/html; charset=gb2312" language="java"%>
+<%@ taglib uri="/struts-tags" prefix="s"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<html>
+<head>
+	<title>网络在线考试——后台管理</title>
+	<link href="${pageContext.request.contextPath }/CSS/style.css" rel="stylesheet">
+	<script type="text/javascript" src="${pageContext.request.contextPath }/JS/common.js" charset="UTF-8"></script>
+</head>
+<body>
+	<%@ include file="top.jsp"%>
+	<table width="778" border="0" align="center" cellspacing="0"
+		cellpadding="0">
+		<tr>
+			<td width="176" valign="top" bgcolor="#FFFFFF">
+				<%@ include file="left.jsp"%>
+			</td>
+			<td width="602" align="right" valign="top" bgcolor="#FFFFFF"><table
+					width="99%" height="487" border="0" cellpadding="0" cellspacing="0"
+					align="right">
+					<tr>
+						<td height="30" bgcolor="#EEEEEE" class="tableBorder_thin"><table
+								width="100%" border="0" cellspacing="0" cellpadding="0">
+								<tr>
+									<td width="78%" class="word_grey">&nbsp;当前位置：<span
+										class="word_darkGrey">管理员信息管理 &gt;&gt;&gt;</span>
+									</td>
+									<td align="right">
+										<img src="${pageContext.request.contextPath }/Images/m_ico1.gif" width="5" height="9">
+										&nbsp;当前管理员：${user.realName } &nbsp;
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td align="center" valign="top">
+						
+							<table width="92%" border="0" cellspacing="0" cellpadding="0">
+								<tr>
+									<td width="84%" height="30" align="right">
+										<img src="${pageContext.request.contextPath }/Images/add.gif" width="19" height="18">&nbsp;
+									</td>
+									<td width="16%">
+										<a href="#" onclick="window.open('${pageContext.request.contextPath}/manger/UserAction_add.do', '', 'height=300,width=300')">添加管理员信息</a>
+									</td>
+								</tr>
+							</table>
+							<s:form action="UserAction_doDel" namespace="/manger" method="post" id="userForm">
+							<s:hidden name="id"></s:hidden>
+							<table width="91%" border="1" cellpadding="0" cellspacing="0"
+								bordercolor="#FFFFFF" bordercolordark="#FFFFFF"
+								bordercolorlight="#67A8DB">
+								<tr align="center" bgcolor="#A8D8FC">
+									<td width="42%" height="26" bgcolor="#B2D6F1">登录名</td>
+									<td width="42%" height="26" bgcolor="#B2D6F1">管理员名称</td>
+									<td width="8%" bgcolor="#B2D6F1">修改</td>
+									<td width="8%" bgcolor="#B2D6F1">删除</td>
+								</tr>
+								<s:iterator value="users">
+										<tr>
+											<td><s:property value="userName"/></td>
+											
+											<td><s:property value="realName"/></td>
+											
+											<td><a href="${pageContext.request.contextPath }/manger/UserAction_edit.do?id=<s:property value="id"/>">修改</a>
+											
+											<td><input type="checkbox" id="delId" value="<s:property value="id"/>"></td>																													
+										</s:iterator>
+							</table>
+							<table width="94%" border="0" cellspacing="0" cellpadding="0">
+									<tr>
+										<td width="60%" height="24">&nbsp;</td>
+										<td width="40%" align="right">
+											<input name="checkbox"
+											type="checkbox" class="noborder"
+											onClick="CheckAll(userForm.delId,userForm.checkbox)">
+											[全选/反选] 
+											[<a style="color:red;cursor:hand;"
+												onClick="checkdel(userForm.delId,userForm)">删除</a>]
+											<div id="ch" style="display: none;">
+												<input id="delId" type="checkbox" class="noborder"
+													value="0">
+											</div>
+										</td>
+									</tr>
+								</table>
+								<table>
+									<tr>
+										 <td width="17%" align="left">总记录数：10条</td> 
+										 <td width="2%" align="right"></td>      
+							             <%if(true){ %>           
+								             <td width="8%" align="center">首页&nbsp;&nbsp;|</td>
+								             <td width="12%" align="center">上一页&nbsp;&nbsp;&nbsp;|</td>
+							             <%}else{ %>
+								             <td width="8%" align="center"><a href="#" onClick="gotopage('','start','userForm')">首页&nbsp;&nbsp;|</a></td>
+								             <td width="12%" align="center"><a href="#" onClick="gotopage('','prev','userForm')">上一页&nbsp;&nbsp;&nbsp;|</a></td>
+							             <%} %>
+							             <%if(true){ %>
+											 <td width="12%" align="center">下一页&nbsp;&nbsp;&nbsp;|</td>
+								             <td width="8%" align="center">末页</td>
+							             <%}else{ %>
+								             <td width="12%" align="center"><a href="#" onClick="gotopage('','next','userForm')">下一页&nbsp;&nbsp;&nbsp;|</a></td>
+								             <td width="8%" align="center"><u><a href="#" onClick="gotopage('','end','userForm')">末页</a></td>
+							             <%} %>
+							             <td width="8%" align="center">第1页</td>
+							             <td width="8%" align="center">共1页</td>
+							             <td width="20%" align="right">至第<input size="1" type="text" name="goPage" >页
+							             <a href="#" onClick="gotopage('','go','userForm')">确定</a></td>
+							             
+							             <td><input type="hidden" name="pageNO" value="1" ></td> 
+							             <td><input type="hidden" name="prevpageNO" value="1"></td>
+							             <td><input type="hidden" name="nextpageNO" value="2"></td>
+							             <td><input type="hidden" name="sumPage" value="1" ></td>
+							             <td><input type="hidden" name="pageSize" value="" ></td> 
+									</tr>
+								</table>
+							</s:form>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+	<%@ include file="copyright.jsp"%>
+</body>
+</html>

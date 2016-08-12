@@ -1,0 +1,14 @@
+package com.examonline.action;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import com.examonline.entity.User;
+
+@Controller
+@Scope("prototype")
+public class UserAction extends BaseAction<User> {
+
+	private static final long serialVersionUID = 1L;
+
+}

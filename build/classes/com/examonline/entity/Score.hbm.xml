@@ -1,0 +1,28 @@
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <!-- 指名该映射文件对应的实体类
+    	table:数据库中对应的表的名称
+     -->
+    <class name="com.examonline.entity.Score" table="Score">
+        <!-- 标识主键的属性 -->
+        <id name="id" column="id" type="int">
+            <!-- 主键生成策略
+            	identity:自增长
+            	uuid：string类型的数据
+             -->
+            <generator class="identity"/>
+        </id>
+        <!-- 普通属性 -->
+        <property name="stuNum" column="stuNum"  type="string"/>
+        <property name="LessonName" column="LessonName"  type="string"/>
+         <property name="LessonID" column="LessonID"  type="int"/>
+         <property name="PaperID" column="PaperID"  type="int"/>
+        <property name="SingleScore" column="SingleScore" type="float"/>
+         <property name="MultipleScore" column="MultipleScore" type="float"/>
+          <property name="TotalScore" column="TotalScore" type="float"/>
+            <property name="Test_Date" column="Test_Date" type="timestamp"/>
+            
+    </class>
+</hibernate-mapping>  

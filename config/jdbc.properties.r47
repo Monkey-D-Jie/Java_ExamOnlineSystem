@@ -1,0 +1,11 @@
+jdbc.driver=org.gjt.mm.mysql.Driver
+jdbc.url=jdbc:mysql://127.0.0.1:3306/exam
+jdbc.username=root
+jdbc.password=123456
+
+c3p0.initialPoolSize=1
+c3p0.minPoolSize=1
+c3p0.maxPoolSize=5
+c3p0.maxIdleTime=60
+c3p0.acquireIncrement=5
+c3p0.idleConnectionTestPeriod=60

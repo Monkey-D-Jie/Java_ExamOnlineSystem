@@ -1,0 +1,190 @@
+package com.examonline.action;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.annotation.Resource;
+
+import org.apache.struts2.interceptor.SessionAware;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import com.examonline.entity.Answer;
+import com.examonline.entity.Exam;
+import com.examonline.entity.Lesson;
+import com.examonline.entity.Question;
+import com.examonline.entity.Score;
+import com.examonline.entity.Student;
+import com.examonline.entity.Taoti;
+import com.examonline.service.AnswerService;
+import com.examonline.service.LessonService;
+import com.examonline.service.QuestionService;
+
+@Controller
+@Scope("prototype")
+public class ExamAction extends BaseAction<Exam> implements SessionAware{
+
+	private static final long serialVersionUID = 1L;
+
+	public String examRule(){
+		return "examRule";
+	}
+	
+	public String selectLesson(){
+		this.lessons = this.lessonService.findAll();
+		return "selectLesson";
+	}
+	
+	@Resource
+	private LessonService lessonService;
+	
+	private List<Lesson> lessons;
+
+	private Map<String, Object> session;
+
+	public List<Lesson> getLessons() {
+		
+		return lessons;
+	}
+	
+	public String ready(){
+		return "ready";
+	}
+	
+	/**
+	 * 开始考试对应的执行逻辑
+	 * ------Exam-------Start--------
+	 */
+	public String examStart(){
+		//接下来就是要展示试卷（试题：包括单选，多选，每题的分数，以及总分等等）和倒计时到指定的页面中了
+		
+		return "start";
+	}
+	//* ------Exam-------Start--------
+	
+	
+	/**
+	 * 考试结束之后，提交按钮触发的执行逻辑
+	 * 涵盖的过程：将答案保存到数据库的Aswer表中---》计算成绩----》将成绩及成绩表中关键字段进行一个传递
+	 * ------Exam---------End----------
+	 */
+	
+	@Resource
+	//获得课程名的相关信息。跳转至本方法时，由Spring给到并注入
+	private Lesson lesson;
+	public Lesson getLesson() {
+		return lesson;
+	}
+	
+	@Resource
+	//获取到跳转至被方法的question
+	private Question question;
+	public Question getQuestion() {
+		return question;
+	}
+	
+	@Resource
+	private Taoti taoti;
+	
+	@Resource
+	private AnswerService answerservice;//用的与操作答案入库的工具
+	
+	
+	//这里涉及到要提交参数至本页面，提交的参数的类型就是：Map<String(单选或者多选)，String[](用户提交的答案数组，单选或者多选)>
+	@Resource
+	private Map<String, String[]> stuAnswer;//用于存放考生提交的答案的参数
+	
+	public String endExam(){
+		/**
+		 * 思路：
+		 * 1.获取到对应的冗余字段：包括考生学号（就是准考证号），考试课程ID，考试所选的taotiID，该套题中questionID（两部分：题类型+题号）
+		 *对这些数据要进行一个预处理的操作-----》这些字段都是必要的，后续的操作中只是用到了而已，先给到数据库中的，可以避免后续
+		 *处理逻辑中出现不必要的脏数据
+		 */
+		String stuNum=((Student)this.session.get("student")).getStuNum();//获得session中存入的考生的准考证号（学号）
+		Score score=new Score();
+		score.setStuNum(stuNum);
+		//获得LessonID
+		score.setLessonID(this.lesson.getId());
+		//获取到套题ID
+		score.setPaperID(taoti.getId());
+		score.setTest_Date(new Date());//设置交卷时间
+		/*
+		 * 第2.步;将答案的数据给到对应的数据库中
+		 * 计算出成绩后再给到数据库中
+		 */
+		this.answerservice.saveAnswers(handleAnswer(),score);
+		
+		return "end";
+	}
+	
+	//处理答案
+	private List<Answer> handleAnswer(){
+		List<Answer> results=new ArrayList<Answer>();
+		Answer answer=null;//暂时设定一个存放答案的Answer对象
+		//获取到传递至本页面的答案参数
+		for(Entry<String, String[]> entry:stuAnswer.entrySet()){
+			String key=entry.getKey();//考生提交参数的名称：qd+id（单选问题+题目编标） qm+id（多选问题+对应的题目编号）
+			String[] value=entry.getValue();//考生提交的对应题目的答案---》这里暂定其提交的形式为：字符数组
+			answer=new Answer();
+			//接下来是要设置答案---》给到存储答案的数据库中：分为单选题和多选题
+			//这里考虑到提交至本方法的参数为上述的参数类型，taotiID或其他ID是以hidden隐藏元素的形式的一并提交
+			//所以要考虑到再不是taotiID类型的参数的情况下来设置问题的类型
+			if(!key.contains("taoti")){//这里先考虑到只有taotiID作为隐藏元素的情况
+				if(key.contains("qd")){//question单《好日怪的取法》，表单选
+					answer.setType("单选题");	
+				}
+				if(key.contains("qm")){//question multiple--->多选题（中英结合命名法就是溜啊）
+					answer.setType("多选题");
+				}
+			}
+			//接下来判断答案的正确性
+			/*
+			 * 说明：数据库中存储答案的方法为存放正确答案对应的下标，不过是以一个字符串来存的
+			 * 思路：在该前提下，就可以在数据库中先去找到对应题目的正确答案，然后将答案进行分割。
+			 * 在由分割后的正确答案数组和这里的提交得到的数组进行比对，然后来判断正误
+			 */
+			int questionID=Integer.parseInt(key.substring(2));//因为key值得类型为qd5或者qm3的形式
+			boolean isTrueFlag=isTrueJudge(questionID,value);
+			answer.setIsTrue(isTrueFlag);
+			
+			results.add(answer);
+			answer=null;
+		}
+		return results;
+	}
+	@Resource
+	private QuestionService questionservice;
+	private boolean isTrueJudge(int id, String[] value) {
+		//设定一个用于返回的标记
+		boolean flag=true;
+		//先要根据ID找到对应的题目
+		Question ques=questionservice.getEntity(id);
+		//得到其答案
+		String rightanswer=ques.getRightAnswer();
+		if(rightanswer!=null){
+			if(value.length>0&&value!=null){//说明传入的提交答案是有效的
+				for(String str:value){
+					if(!rightanswer.contains(str)){
+						flag=false;
+						break;
+					}
+				}
+	}
+		}
+		return flag;
+	}
+	//* ------Exam---------End----------
+	
+	
+	
+
+	@Override
+	public void setSession(Map<String, Object> session) {
+		this.session=session;
+	}
+	
+}

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+
+	<package name="student" namespace="/student" extends="one">
+		
+		<action name="StudentAction_*" class="com.examonline.action.StudentAction" method="{1}">
+		
+			<result name="index">/index.jsp</result>
+			<result name="input" type="redirect">StudentAction_index.do</result>
+		    <result name="register">/WEB-INF/student/register.jsp</result>
+		    <result name="main">/WEB-INF/student/default.jsp</result>
+		    <result name="queryExam">/WEB-INF/student/stuResultQuery.jsp</result>
+		    <result name="showinfo">/WEB-INF/manage/student.jsp</result>
+		    <result name="logout">/index.jsp</result>
+		    
+			    <!-- 跳转到查找密码 -->
+			    <!-- SeekPassword的Action -->
+			<result name="step1">/WEB-INF/student/seekPwd.jsp</result>
+			<result name="step2">/WEB-INF/student/seekPwd1.jsp</result>
+			<result name="step3">/WEB-INF/student/seekPwd2.jsp</result>
+			<result name="step4">/WEB-INF/student/seekPwd3.jsp</result>
+			
+			<!-- 修改学生个人信息 -->
+			<result name="edit">/WEB-INF/student/student_Modify.jsp</result>
+			<result name="finished">/index.jsp</result>
+			<result name="step4">/WEB-INF/student/default.jsp</result>
+			
+			<!-- 搜索 -->
+			<result name="search">/WEB-INF/manage/main.jsp</result>
+			
+			<!-- 错误页面跳转 -->
+			<result name="input">/index.jsp</result>
+		</action>
+		
+		<action name="ExamAction_*" class="com.examonline.action.ExamAction"  method="{1}">
+		    
+		    <result name="examRule">/WEB-INF/student/examRule.jsp</result>
+		    <result name="selectLesson">/WEB-INF/student/selectLesson.jsp</result>
+		    <result name="ready">/WEB-INF/student/ready.jsp</result>
+		    <result name="startExam">/WEB-INF/student/startExam.jsp</result>
+		    <result name="end">/index.jsp</result>
+		</action> 
+		<action name="StudentLoginAction_*" class="com.examonline.action.LoginAction" method="{1}">
+			<result name="logout">/index.jsp</result>
+			
+		</action>
+	</package>
+</struts>

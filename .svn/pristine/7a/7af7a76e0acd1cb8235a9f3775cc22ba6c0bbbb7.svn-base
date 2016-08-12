@@ -1,0 +1,67 @@
+package com.examonline.entity;
+
+import java.util.Date;
+
+public class Taoti extends BaseEntity {
+	private static final long serialVersionUID = 1L;
+
+	private int id;
+	private String name;
+
+	private Date joinTime=new Date();
+	
+	private Lesson lesson;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Date getJoinTime() {
+		return joinTime;
+	}
+
+	public void setJoinTime(Date joinTime) {
+		this.joinTime = joinTime;
+	}
+	
+	
+	public Lesson getLesson() {
+		return lesson;
+	}
+
+	public void setLesson(Lesson lesson) {
+		this.lesson = lesson;
+	}
+
+
+
+	/******** 非持久化属性  ***********/
+	private int lessonId;
+
+	public int getLessonId() {
+		return lessonId;
+	}
+
+	public void setLessonId(int lessonId) {
+		this.lessonId = lessonId;
+	}
+	
+	
+
+	
+	
+
+
+}

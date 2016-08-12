@@ -1,0 +1,81 @@
+package com.examonline.service.impl;
+
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.examonline.dao.BaseDao;
+import com.examonline.entity.Answer;
+import com.examonline.entity.Score;
+import com.examonline.service.AnswerService;
+import com.examonline.service.LessonService;
+import com.examonline.service.ScoreService;
+
+
+@Service("answerService")
+public class AnswerServiceImpl extends BaseServiceImpl<Answer> implements AnswerService {
+	
+	@Resource(name="answerDao")
+	@Override
+	public void setBaseDao(BaseDao<Answer> baseDao) {
+		super.setBaseDao(baseDao);
+	}
+			//在这里来计算成绩
+			/**
+			 * 总分是100分
+			 * 单选多少分，多选该有多少分
+			 * 
+			 * ---?
+			 * 这里应该还要知道taoti的ID才行。然后获得对应套题的题目数
+			 * 再由【总分100/题目数】得到每道题的分数
+			 */
+	@Resource
+	private ScoreService scoreservice;
+	
+	@Resource
+	private LessonService lessonservice;//用来找到lessonID对应的课程，并给到score
+	
+	@Override
+	public void saveAnswers(List<Answer> handleAnswer, Score score) {
+		if(!handleAnswer.isEmpty()&&handleAnswer.size()>0){
+			for(Answer answer: handleAnswer){
+				//先把不会用于计算用到的冗余字段存入到答案表中
+				answer.setStuNum(score.getStuNum());
+				answer.setLessonId(score.getLessonID());
+				answer.setTaotiId(score.getPaperID());
+				answer.setExamdate(score.getTest_Date());
+				
+				this.saveEntity(answer);
+			}
+			score.setLessonName(lessonservice.getEntity(score.getLessonID()).getLessonName());
+			//计算单选成绩和多选成绩
+			float singleResult=caculateScore(score.getStuNum(),40f,score.getPaperID(),"单选题", score.getTest_Date());
+			float multipleResult=caculateScore(score.getStuNum(),60f,score.getPaperID(),"多选题", score.getTest_Date());
+			score.setSingleScore(singleResult);
+			score.setMultipleScore(multipleResult);
+			score.setTotalScore(multipleResult+singleResult);
+		}
+		this.scoreservice.saveEntity(score);
+		
+	}
+	//计算某学生在某时间考的某课程下的某套题某类型题目（单选或者多选）所获得的总分
+	public float caculateScore(String stuNum,float total,int TaotiId,String type,Date TestDate){
+		//taotiId指定到是taoti中的哪一张试卷，type指定到的是该指定试卷中的各题目所属的类型
+		String hql="select count(*) from Question where taoti.id=? and type=?";
+		//找到了Taoti中对应的题目总数
+		long sum = (Long) this.UniqueResult(hql,TaotiId,type);
+		//如果该套题不属于当前考生所考的套题
+		if(sum==0){
+			return total;//返回总分，交至其他的套题处理
+		}
+		//获取该考生提交答案中的正确题目总数
+		String hql1="select count(*) from Answer where stuNum=? and type=? and taotiId=? and examdate=? and isTrue=?";
+		long right=(Long) this.UniqueResult(hql1, stuNum,type,TaotiId,TestDate,true);
+		//求得其获得的总分
+		float score=(total/sum)*right;
+		return score;
+	}
+}

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+    <hibernate-mapping package="com.examonline.entity">
+    	<class name="com.examonline.entity.Taoti" table="taotis" >
+    		 <id name="id" column="id" type="int">
+            <generator class="identity"/>
+        </id>
+        <property name="name" column="name" type="string" length="20"/>
+       
+        <property name="joinTime" column="joinTime" type="timestamp"/>
+        <!-- 与课程的多对一 -->
+        <many-to-one name="lesson" column="lessonId" class="Lesson" lazy="false"/>
+    	</class>
+    </hibernate-mapping>

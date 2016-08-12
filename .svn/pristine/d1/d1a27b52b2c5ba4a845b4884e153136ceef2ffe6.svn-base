@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+
+	<package name="manger" namespace="/manger" extends="one">
+		<!-- LoginAction -->
+		<action name="LoginAction_*" class="loginAction" method="{1}">
+		    <result name="index">/WEB-INF/manage/main.jsp</result>
+		    <result name="input">/login.jsp</result>
+		</action>
+		<!-- UserAction -->
+		<action name="UserAction_*" class="userAction" method="{1}">
+		    <result name="index">/WEB-INF/manage/manager.jsp</result>
+		    <result name="add">/WEB-INF/manage/manager_add.jsp</result>
+		    <result name="edit">/WEB-INF/manage/manager_edit.jsp</result>
+		    <result name="redirectAction" type="redirectAction">UserAction_index.do</result>
+		</action>
+		<!-- SubjectAction -->
+		<action name="SubjectAction_*" class="subjectAction" method="{1}">
+		    <result name="index">/WEB-INF/manage/lesson.jsp</result>
+		    <result name="add">/WEB-INF/manage/lesson_add.jsp</result>
+		    <result name="redirect" type="redirectAction">SubjectAction_index.do</result>
+		</action>
+		<!-- TaotiAction -->
+		<action name="TaotiAction_*" class="taotiAction" method="{1}">
+			<result name="index">/WEB-INF/manage/taoTi.jsp</result>
+		    <result name="add">/WEB-INF/manage/taoTi_Add.jsp</result>
+		    <result name="edit">/WEB-INF/manage/taoTi_Modify.jsp</result>
+		 	<result name="redirect" type="redirectAction">TaotiAction_index.do</result>
+		</action>
+		
+		
+		<!-- questionAction -->
+		<action name="question_*" class="com.examonline.action.QuestionAction" method="{1}">
+			<result name="index">/WEB-INF/manage/main.jsp</result>
+			<result name="questions">/WEB-INF/manage/questions.jsp</result>
+			<result name="addques">/WEB-INF/manage/questions_Add.jsp</result>
+			<result name="doadd" type="redirectAction">question_questions.do</result>
+			<result name="edit" >/WEB-INF/manage/questions_Modify.jsp</result>
+			<result name="doedit" type="redirectAction">question_questions.do</result>
+			<result name="del" type="redirectAction">question_questions.do</result>
+		</action>
+		
+		<!-- LessonAction -->
+		<action name="LessonAction_*" class="com.examonline.action.LessonAction" method="{1}">
+			<result name="lesson">/WEB-INF/manage/lesson.jsp</result>
+			<result name="lessonAdd">/WEB-INF/manage/lesson_add.jsp</result>
+			<result name="redirect" type = "redirectAction">LessonAction_lesson.do</result>
+		</action>
+		
+	</package>
+	
+	
+
+</struts>

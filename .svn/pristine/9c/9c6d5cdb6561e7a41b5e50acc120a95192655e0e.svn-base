@@ -1,0 +1,140 @@
+package com.examonline.action;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.interceptor.SessionAware;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import com.examonline.entity.Exam;
+import com.examonline.entity.Question;
+import com.examonline.entity.Taoti;
+import com.examonline.service.QuestionService;
+import com.examonline.service.TaotiService;
+
+@Controller
+@Scope("prototype")
+public class ExamAction extends BaseAction<Question> implements SessionAware{
+
+	private static final long serialVersionUID = 1L;
+
+	@Resource
+	private TaotiService taotiService;
+	
+	private List<Taoti> taotis;
+	
+	public List<Taoti> getTaotis(){
+		
+		return taotis;
+	}
+
+	public String selectLesson(){
+		this.taotis = this.taotiService.findAll();
+		return "selectLesson";
+	}
+	
+	public String examRule(){
+		
+		return "examRule";
+	}
+	
+	public String ready(){
+		return "ready";
+	}
+
+	@Resource
+	private QuestionService questionService;
+	
+	private List<Question> mutilQuestion;
+	private List<Question> singleQuestion;
+	
+	
+	public List<Question> getSingleQuestion() {
+		return singleQuestion;
+	}
+
+
+	public List<Question> getMutilQuestion() {
+		return mutilQuestion;
+	}
+
+	public String startExam(){
+		
+		this.singleQuestion = this.questionService.findQuestions("单选题",model.getTaotiId());
+		this.mutilQuestion = this.questionService.findQuestions("多选题",model.getTaotiId());
+		//记录考试考试时间
+		this.session.put("startTime", new Date().getTime()+"");
+		
+		return "startExam";
+	}
+	
+	public void showStartTime(){
+		
+		try {
+			String startTime = (String) this.session.get("startTime");
+			long time = Long.parseLong(startTime);
+			Date date = new Date(time);
+			SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+			String str = format.format(date);
+			
+			HttpServletResponse response = ServletActionContext.getResponse();
+			response.setContentType("text/html;charset=utr-8");
+			response.getWriter();
+			PrintWriter writer = response.getWriter();
+			writer.write(str);
+			writer.flush();
+			
+		} catch (Exception e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		} 
+	}
+	
+public void showRemainTime(){
+		
+		try {
+			String startTime = session.get("startTime").toString();
+			long a = Long.parseLong(startTime);
+			Date start = new Date(a);
+			Date current = new Date();
+			long yyTime = current.getTime()-start.getTime();
+			Date total = new Date(20*60*1000);
+			long remain = total.getTime()-yyTime-8*3600*1000;
+			
+			HttpServletResponse response = ServletActionContext.getResponse();
+			response.setContentType("text/html;charset=utr-8");
+			PrintWriter writer = response.getWriter();
+			SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+			writer.write(format.format(new Date(remain)));
+			writer.flush();
+			
+		} catch (Exception e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		} 
+	}
+	
+	public int getQueScore(int total, List<Question> questions){
+		return total/questions.size();
+	}
+
+
+
+	private Map<String, Object> session;
+	
+	@Override
+	public void setSession(Map<String, Object> session) {
+		// TODO 自动生成的方法存根
+		this.session = session;
+		
+	}
+}

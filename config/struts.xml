@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+
+	<constant name="struts.action.extension" value="do" />
+	<constant name="struts.configuration.xml.reload" value="true" />
+	<constant name="struts.devMode" value="true" />
+	<constant name="struts.i18n.encoding" value="gb2312"></constant>
+	<!-- spring进行整合 对象的创建和维护交由spring进行统一管理 -->
+	<constant name="struts.objectFactory" value="spring"/>
+	<!-- 控制suruts样式 -->
+	<constant name="struts.ui.theme" value="simple"></constant>
+	
+	<package name="one" namespace="/" extends="struts-default">
+		<!-- 定义拦截器 -->
+		<interceptors>
+			<interceptor-stack name="myStack">
+				<!-- 默认的拦截器栈 -->
+				<interceptor-ref name="defaultStack">
+				    <!-- 强制刷新model -->
+					<param name="modelDriven.refreshModelBeforeResult">true</param>
+				</interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<!-- 指定默认的拦截器栈 -->
+		<default-interceptor-ref name="myStack"/>
+	</package>
+
+	<!-- 引入其他配置信息 -->
+	<include file="struts-*.xml"/>
+	
+</struts>

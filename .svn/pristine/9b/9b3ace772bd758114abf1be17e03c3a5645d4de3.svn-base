@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+           http://www.springframework.org/schema/beans/spring-beans-4.2.xsd  
+           http://www.springframework.org/schema/context  
+           http://www.springframework.org/schema/context/spring-context-4.2.xsd  
+           http://www.springframework.org/schema/aop  
+           http://www.springframework.org/schema/aop/spring-aop-4.2.xsd  
+           http://www.springframework.org/schema/tx  
+           http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+    
+    <!-- 添加扫描的包 -->
+    <context:component-scan base-package="com.examonline.action,com.examonline.dao.impl,com.examonline.service.impl,com.examonline.listener"/>
+    
+    <!-- 分离配置文件 -->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+    
+    <!-- 配置数据源 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <!-- 配置数据库的信息 -->
+        <property name="driverClass" value="${jdbc.driver}"/>
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <property name="user" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <!--初始化时获取的连接数，取值应在minPoolSize与maxPoolSize之间。Default: 3 -->
+		<property name="initialPoolSize" value="${c3p0.initialPoolSize}" />
+		<!--连接池中保留的最小连接数。 -->
+		<property name="minPoolSize" value="${c3p0.minPoolSize}" />
+		<!--连接池中保留的最大连接数。Default: 15 -->
+		<property name="maxPoolSize" value="${c3p0.maxPoolSize}" />
+		<!--最大空闲时间,60秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->
+		<property name="maxIdleTime" value="${c3p0.maxIdleTime}" />
+		<!--当连接池中的连接耗尽的时候c3p0一次同时获取的连接数。Default: 3 -->
+		<property name="acquireIncrement" value="${c3p0.acquireIncrement}" />
+		<!--每60秒检查所有连接池中的空闲连接。Default: 0 -->
+		<property name="idleConnectionTestPeriod" value="${c3p0.idleConnectionTestPeriod}" />
+    </bean>
+    
+    <!-- 本地回话工厂 -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <!-- 指定hibernate的配置文件 -->
+        <property name="configLocation" value="classpath:hibernate.cfg.xml"/>
+        <!-- 配置数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 指明映射文件所在的位置 -->
+        <property name="mappingDirectoryLocations">
+            <list>
+                <value>classpath:com/examonline/entity</value>
+            </list>
+        </property>
+    </bean>
+    
+    <!-- 事务管理器 -->
+    <bean id="txManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    
+    <!-- 配置增强:声明式事务 -->
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+        <tx:attributes>
+            <!-- 指定哪些方法需要加上增强 -->
+            <tx:method name="save*" isolation="DEFAULT" propagation="REQUIRED"/>
+            <tx:method name="delete*" isolation="DEFAULT" propagation="REQUIRED"/>
+            <tx:method name="update*" isolation="DEFAULT" propagation="REQUIRED"/>
+            <tx:method name="new*" isolation="DEFAULT" propagation="REQUIRED"/>
+            <tx:method name="batch*" isolation="DEFAULT" propagation="REQUIRED"/>
+            
+            <!-- 读操作 -->
+            <tx:method name="get*" isolation="DEFAULT" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="load*" isolation="DEFAULT" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="find*" isolation="DEFAULT" propagation="REQUIRED" read-only="true"/>
+            
+            <!-- 统配 -->
+            <tx:method name="*" isolation="DEFAULT" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+    
+    <!-- aop -->
+    <aop:config>
+        <!-- 声明切点 -->
+        <!-- 
+	    	第一个   *  		:匹配返回值
+	    	第二个   *. 		:任何包和任何子包
+	    	第三个   .  		:包和类的分隔
+	    	第四个   *Service	:以Service结尾的任何类和接口
+	    	第五个   .*(..)		:任何方法，参数不限
+	     -->
+        <aop:pointcut expression="execution(* *..*Service.*(..))" id="txPointcut"/>
+        <!-- 事务的切面 -->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
+    </aop:config>
+    
+</beans>
